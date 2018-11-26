@@ -1,0 +1,368 @@
+
+
+1. Create a database:
+CREATE DATABASE database_name;
+
+2. Dropping a database:
+DROP DATABASE database_name;
+
+3. Show all databases:
+SHOW databases;
+
+4. To use a particular database:
+USE <database name>;
+
+5. To see which database we are currently at:
+SELECT database();
+
+6. To create a table:
+    CREATE TABLE <tablename>
+      (
+	column_name1 data_type NOT NULL DEFAULT 'xyz',
+        column_name2 data_type NOT NULL DEFAULT 999
+      );
+(NOTE: 
+A. "NOT NULL" part is optional. Remove it if you allow NULL values.
+NOT NULL means a value has to be entered for that column.
+If you don't enter values for a VARCHAR with a NOt NULL Flag "on", it will 
+be an empty string (''). The same for INT will be '0'. You cannot enter NULL
+as a value.
+B. "DEFAULT" part is also optional.
+To avoid empty strings and zeroes, we can specify Default Values.
+But we can still enter "NULL" manually if we want to even if DEFAULTS
+are given. Deliberately entering NULL overrides DEFAULT.
+C. If Both NOT NULL and DEFAULT is given, a column CANNOT be NULL
+under any circumstances even if you write NULL in it's value. You can
+however leave it blank and the DEFAULT value will be placed.
+D. Special note on Primary Keys:
+Used to avoid duplicate values. Can be used to either assign an auto-incrementing
+ID so that any duplicate values entered will have a different ID or to special
+columns such as username to avoid duplicate usernames. The latter will throw errors
+if a duplicate entry is added while the former will allow the duplicate entry but 
+will assign an unique ID. 
+In case of using PRIMARY KEY for assigning auto-incrementing ids:
+    CREATE TABLE <tablename>
+      (
+        column_id   INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	column_name1 data_type NOT NULL DEFAULT 'xyz',
+        column_name2 data_type NOT NULL DEFAULT 999
+      ); 
+
+In case of using PRIMARY KEY for avoiding duplicate entries:
+    CREATE TABLE <tablename>
+      (
+	column_name1 data_type NOT NULL DEFAULT 'xyz' PRIMARY KEY,
+        column_name2 data_type NOT NULL DEFAULT 999
+      );
+
+    Eg.
+      CREATE TABLE worldcup
+      (
+        Teams VARCHAR(50),
+        Goals INT
+      );
+NOTE: When two or more columns are selected as primary key, then
+    CREATE TABLE <tablename>
+      (
+	column_name1 data_type NOT NULL DEFAULT 'xyz,
+        column_name2 data_type NOT NULL DEFAULT 999
+	PRIMARY KEY (column_name1, column_name2)
+      );
+THE order inside PRIMARY KEY is important.
+
+E. Another way to avoid duplicate values in a column is to use UNIQUE:
+CREATE <tablename> xyz( username VARCHAR(100) UNIQUE NOT NULL);
+
+
+
+7. To show the tables created:
+SHOW TABLES;
+
+8. To show contents of the table:
+SHOW COLUMNS FROM <tablename>;
+OR
+DESC <tablename>;
+
+9. Dropping a table:
+DROP TABLE <tablename>;
+
+10. Insert data in tables:
+INSERT INTO table_name(column_name1, column_name2,....) 
+VALUES (1st_row_data1, 1st_row_data2,....), 
+(2nd_row_data1, 2nd_row_data2,....),
+.........................
+;
+
+11. Show table with inserted data:
+# To show the full table:
+SELECT * FROM <tablename>; 
+# To show only one table:
+SELECT column_name2 FROM <tablename>;
+# To show multiple columns as per specified order:
+SELECT column_name2, column_name1, column_name4,.... FROM <tablename>;
+
+12. To show warning if you get a warning in the prompt:
+SHOW WARNINGS;
+
+13. If long chracters are inserted than VARCHAR limit,
+it will truncate and store only upto it's max limit.
+If characters are inserted in place of an INT, '0' will
+be stored as default.
+-------------------------------------------------------------------------
+
+14. CRUD: Create, Read, Update, Delete
+
+READ:
+15. To show specific columns and values (WHERE command):
+# For INT
+SELECT * FROM <tablename> WHERE column_name1>10;
+# For VARCHAR. Case Insensitive by default 
+SELECT * FROM <tablename> WHERE column_name1='xyzabc';
+
+16. Using Aliases (AS command):
+If you don't want to change the name of a column permanently
+but only want MySQL to display it as a different name, use AS.
+Also useful if you are joining two tables of same name to avoid confusion.
+SELECT column_name2 AS columnnickname, column_name3 FROM <tablename>;
+
+UPDATE:
+17. To update any column value:
+UPDATE <tablename> SET column_name1='xyz123' WHERE column_name1='ijkl';
+OR
+In table <tablename> update values in column_name1 to 'xyz123' where
+the value(s) of column_name3 is 'ijkl'.
+UPDATE <tablename> SET column_name1='xyz123', column_name2='qwerty' WHERE column_name4='ijkl';
+TIP: To make sure you are updating on the right data, always run 
+SELECT and WHERE commands and if the output is satisfactory,
+then run UPDATE, SET WHERE commands. Rerun SELECT and WHERE commnds
+to confirm the update.
+
+DELETE:
+18. To delete any row:
+DELETE FROM <tablename> WHERE column_name1='ijkl';
+To delete all rows:
+DELETE FROM <tablename>;
+TIP1: Same as UPDATE.
+TIP2: To delete a particular column value, use UPDATE and set value to NULL/zero.
+
+STRING FUNCTIONS:
+19. To combine two or more columns:
+SELECT 
+	CONCAT(column_name1, 'TEXT/SPACE', column_name2, 'TEXT/SPACE',...) AS 'new_column_name'
+FROM <tablename>;
+OR to use the same separator use CONCAT with separator (CONCAT_WS), 
+SELECT
+	CONCAT_WS('TEXT/SPACE',column_name1, column_name2, .....) AS 'new_column_name'
+FROM <tablename>;
+
+20. To display only a part of the column:
+SELECT SUBSTRING(column_name1, start, steps) AS 'new_name' FROM <tablename>;
+start: From 1 and not zero.
+steps: will only show you 'n' characters from the starting position. Not a range.
+Can be negative.
+
+21. Using CONCAT & SUBSTRING together:
+SELECT 
+	CONCAT
+		(
+			SUBSTRING(column_name1, start, steps),
+		 	'TEXT/SPACE'
+		) AS 'new_column_name'
+FROM <tablename>;
+
+22. To replace parts of a string:
+SELECT REPLACE(column_name, 'replace_what', 'replace_with') FROM <tablename>;
+Note: replcae_what is case sensitive
+
+23. To reverse the whole string:
+SELECT REVERSE(column_name) AS 'reverse_column' FROM <tablename>;
+
+24. To find the character length:
+SELECT CHAR_LENGTH(column_name) AS 'character_length' FROM <tablename>;
+
+25. Use SQL Formatter online.
+
+26. Change case of a string;
+SELECT UPPER(column_name) AS 'Newtitle' FROM <tablename>;
+SELECT LOWER(column_name) AS 'Newtitle' FROM <tablename>;
+-------------------------------------------------------------------------
+27. To get unique values from a lot of repeating values in a column or in all rows:
+SELECT DISTINCT(column_name1, column_name2,...) FROM <tablename>;
+
+28. To order values by:
+#Alphabetical order/Ascending- 
+SELECT column_name1, column_name2 FROM <tablename> ORDER BY column_name3;
+# Descending order-
+SELECT column_name1, column_name2 FROM <tablename> ORDER BY column_name4 DESC;
+Note: It does not matter if the columns by which you want to order by is in your output.
+#If you want to order by the column which is also present in your command, just writing the
+order number will do-
+SELECT column_name1, column_name2, column_name3 FROM <tablename> ORDER BY 3 DESC;
+(instead of)
+SELECT column_name1, column_name2, column_name3 FROM <tablename> ORDER BY column_name3 DESC;
+# You can add two or more sort conditions:
+SELECT column_name1, column_name2, column_name3 FROM <tablename> ORDER BY column_name3 DESC, column_name1 DESC;
+
+29. To show only a few number of rows:
+SELECT column_name FROM <tablename> LIMIT 20;
+# Start from the 4th row and show me 10 rows:
+SELECT column_name FROM <tablename> LIMIT 3,10;
+NOTE: In SQL, strings start from 1 and rows start from Zero.
+
+30. Pattern matching with LIKE command:
+SELECT column_name1, column_name2 FROM <tablename> WHERE column_name1 LIKE '%xyz%';
+NOTE: % means wildcard. The above command will look for values that starts with something
+and contains 'xyz' and ends with something/nothing.
+Other wildcards are-
+A) '_' :(1 underscore) means exactly one character. More underscore=more characters.
+
+---------------------------------AGGREGATE FUNCTIONS------------------------
+31. To count how any rows are there:
+SELECT COUNT(*) FROM <tablename>;
+NOTE: COUNT(*) is a better usage COUNT(column_name)
+
+32. Make mega rows of groups of similar column values:
+SELECT column_name1,column_name2 FROM <tablename> GROUP BY column_name2;
+NOTE: This will create mega-rows of unique column_name2 values but ONLY
+the first value of column_name1 will be visible. To confirm if the GROUP BY 
+has worked, it is better to use it with COUNT(*):
+SELECT column_name1,column_name2, COUNT(*) FROM <tablename> GROUP BY column_name2, column_name3;
+NOTE: This will show you counts of values in the mega row but will only show you 
+the first value of each mega-row in column_name1.
+ 
+33. To get the Min and Max values in a table:
+SELECT MIN/MAX(column_name) FROM <tablename>;
+
+34. Using sub-queries to find other column values wrt Min/Max:
+SELECT column_name1, column_name2 FROM <tablename> WHERE column_name2=
+(SELECT MAX(column_name2) FROM <tablename>);
+(OR)
+Use ORDER BY and LIMIT 1 to effeciently sort the data and display the max(DESC) and min(ASC) values.
+
+35. Adding data of a column:
+SELECT SUM(column_name) FROM <tablename>;
+NOTE: Use GROUP BY to find sum for individual mega rows.
+36. To find average:
+SELECT AVG(column_name) FROM <tablename>;
+NOTE: Use GROUP BY to find average of individual mega rows. 
+---------------------------------DATA TYPES------------------------
+37. CHAR vs VARCHAR: fixed (max 255 characters) vs variable length
+DECIMAL(x,y): x represents total number of digits and y represents digits after decimal.
+FLOAT vs DOUBLE: DOUBLE has better precision than FLOAT. DECIMAL is better than FLOAT.
+DATE: YYYY-MM-DD
+TIME: HH:MM:SS
+DATETIME:YYYY-MM-DD HH:MM:SS
+CURDATE(): Current Date (USAGE: SELECT CURDATE();)
+CURTIME(): Current Time
+NOW(): Current Datetime
+DAY():
+DAYNAME():
+DAYOFWEEK():
+DAYOFYEAR():
+HOUR(): etc etc
+DATE_FORMAT(date, format): See documentation. 
+Eg. SELECT DATE_FORMAT('2017-05-11 12:11:03', '%W-%M-%Y) FROM <tablename>;
+DATE_DIFF(date1, date2):
+DATE_ADD()/DATE_SUB(date, INTERVAL x UNIT)/+/-:
+EG. SELECT column_name1, DATE_ADD(column_with_date, INTERVAL 2 MONTH) FROM <tablename>;
+(OR)
+SELECT column_name1, column_with_date + INTERVAL 2 MONTH + INTERVAL 5 HOUR FROM <tablename>;
+
+38. TIMESTAMP:
+CREATE TABLE xyz( abc VARCHAR(200), ijk TIMESTAMP DEFAULT NOW());
+NOTE: Use TIMESTAMP with a DEFAULT. Good practice.
+IMPORTANT NOTE:
+If you want to make a table where timestamps are automatically entered but
+you also want to update the timestamp in case the rows are changed/updated, use this-
+CREATE TABLE xyz( abc VARCHAR(200), ijk TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP);
+
+----------------------------OPERATORS-----------------
+39. Not Equal (!=)
+SELECT column_name from <tablename> WHERE column_name != 2137;
+40. NOT LIKE:
+41. >,<,>= etc like any other programming language.
+42. BOOLEAN: 0, 1
+43. AND(&&)/OR(||)
+44. BETWEEN x AND y: Both x and y are inclusive unlike range.
+NOT BETWEEN
+
+45. To change the string type: use cast() or convert()
+SELECT CAST('xxxx-yy-zz' AS DATETIME);
+
+46. IN: Can be used instead of using multiple '=' and 'OR' statements.
+SELECT column_name FROM <tablename> WHERE column_name IN ('xyz, 'ijk', 'abc');
+NOT IN: Can be used instead of using multiple '!=' and 'AND' statements.
+
+47. CONDITIONAL STATEMENTS:
+if then else is WHEN, THEN, ELSE in MySQL. To use a conditional statement, use the 
+WHEN THEN ELSE statements between "CASE" and " END":
+SELECT column_name1, column_name2, CASE WHEN abc>100 THEN 'xyz' WHEN abc<99 THEN 'smallxyz' 
+ELSE 'ijk' END AS 'newcolumn_name' FROM <tablename>;
+
+NOTE: IF statement is used as an alternative but the syntax is a bit different:
+SELECT column_name1, column_name2, IF(column_name3>=f2, 'then statement', 'else statement') 
+AS 'newcolumn_name' FROM <tablename>;
+--------------------------------JOINS----------------------------------
+48. PRIMARY KEY vs FOREIGN KEY:
+In a database, let there be two tables such that one field named 'uniqe_column' is shared
+by the two tables. SO in <table_name1>, the unique column which is a PRIMARY KEY is shared
+ by column_8 as a FOREIGN KEY in <tablename2>:
+    CREATE TABLE <tablename_1>(
+        unique_column INT AUTO_INCREMENT PRIMARY KEY,
+        column_name2 VARCHAR(100),
+        column_name3 VARCHAR(100),
+        column_name4 VARCHAR(100)
+    );
+    CREATE TABLE <table_name2>(
+        column_name5 INT AUTO_INCREMENT PRIMARY KEY,
+        column_name6 DATE,
+        column_name7 DECIMAL(8,2),
+        column_name8 INT,
+        FOREIGN KEY(column_name8) REFERENCES table_name1(unique_column)
+    );
+
+NOTE: If two tables are related by a FOREIGN KEY, then you cannot delete a row from one table.
+To allow deletion of one row from table1 with auto-deletion of all related data in table2, 
+use "ON DELETE CASCADE".
+    CREATE TABLE <tablename_1>(
+        unique_column INT AUTO_INCREMENT PRIMARY KEY,
+        column_name2 VARCHAR(100),
+        column_name3 VARCHAR(100),
+        column_name4 VARCHAR(100)
+    );
+    CREATE TABLE <table_name2>(
+        column_name5 INT AUTO_INCREMENT PRIMARY KEY,
+        column_name6 DATE,
+        column_name7 DECIMAL(8,2),
+        column_name8 INT,
+        FOREIGN KEY(column_name8) REFERENCES table_name1(unique_column)
+	ON DELETE CASCADE
+    );
+
+49. To perform Inner Joins of two tables which are related by a Foreign key:
+# IMPLICIT INNER JOIN:
+SELECT column_name2, column_name7 FROM <tablename1>, <tablename2>
+WHERE tablename1.unique_column=tablename2.column8; 
+
+# EXPLICIT INNER JOIN (more conventional):
+SELECT column_name2, column_name7 FROM <tablename1> JOIN <tablename2>
+ON tablename1.unique_column=tablename2.column8;
+NOTE: Order doesn't matter.
+
+50. LEFT JOIN/RIGHT JOIN: 
+
+51. If you want to convert a NULL to zero:
+SELECT column_name1, column_name2, IFNULL(column_name3, 0) FROM <tablename>;
+
+52. TIP: Group by ID is a better way to  group rather than by title, name etc.
+To check for NULL, do not use 
+WHERE x=NULL. DO this instead-
+WHERE x IS NULL
+
+53. To round numbers:
+ROUND(column_name, n)
+(n= places after decimal)
+
+54. WHERE vs HAVING:
+WHERE is for searching something in a column. 
+HAVING does the same job but for grouped columns.
