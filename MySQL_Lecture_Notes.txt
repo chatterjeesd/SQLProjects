@@ -347,7 +347,8 @@ WHERE tablename1.unique_column=tablename2.column8;
 # EXPLICIT INNER JOIN (more conventional):
 SELECT column_name2, column_name7 FROM <tablename1> JOIN <tablename2>
 ON tablename1.unique_column=tablename2.column8;
-NOTE: Order doesn't matter.
+NOTE: Order doesn't matter. Do inner joins on primary keys and foreign key to avoid
+duplicate results. You can do multiple inner joins as well to link three or more tables.
 
 50. LEFT JOIN/RIGHT JOIN: 
 
